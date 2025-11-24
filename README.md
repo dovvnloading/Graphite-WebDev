@@ -148,14 +148,4 @@ This project is licensed under the Apache 2.0 License. See the `LICENSE` file fo
 
 ---
 
-## Acknowledgments
-
-### Open Source & Community
-This project stands on the shoulders of the open-source community. Special thanks to the maintainers and contributors of React, Vite, TailwindCSS, and Lucide.
-
-### Artificial Intelligence
-A specific acknowledgment to **Google DeepMind** for the development of the Gemini model family (Flash 2.5 and Pro 3), which provides the reasoning and coding capabilities necessary to drive this environment.
-
----
-
 *Os-WebDev is a prototype. Use within a secure environment. No backend server is required; all code generation and execution happen locally within the user's browser context.*
