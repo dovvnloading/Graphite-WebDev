@@ -144,7 +144,7 @@ A detailed look at the various components and modals within Os-WebDev.
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the Apache 2.0 License. See the `LICENSE` file for details.
 
 ---
 
