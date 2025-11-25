@@ -3,217 +3,410 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Os-WebDev | AI-Powered Web Environment</title>
+    <meta name="description" content="Os-WebDev: A browser-based Agentic IDE powered by Google Gemini and React 19.">
+    <title>Os-WebDev | The Creative Engine</title>
     
     <!-- Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     
-    <!-- Tailwind -->
+    <!-- Tailwind (Via CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
     <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
     <style>
-      /* --- THEME VARIABLES (Extracted from App source) --- */
+      /* --- THEME CONFIGURATION --- */
       :root {
-        /* LIGHT MODE (Default) */
+        /* LIGHT MODE VARIABLES */
         --bg-color: #e0e5ec;
         --clay-bg: #e0e5ec;
-        --clay-surface: #e0e5ec;
-        --clay-highlight: #ffffff;
-        --clay-shadow: #a3b1c6;
         --clay-accent: #6d5dfc;
+        --clay-accent-hover: #5b4cc4;
         --clay-text: #4a5568;
-        
-        /* SHADOWS - Light */
-        --shadow-out: 9px 9px 16px rgb(163,177,198,0.6), -9px -9px 16px rgba(255,255,255, 0.5);
-        --shadow-in: inset 6px 6px 10px 0 rgba(163,177,198, 0.7), inset -6px -6px 10px 0 rgba(255,255,255, 0.8);
-        --shadow-float: 12px 12px 24px 0 rgba(163,177,198, 0.6), -12px -12px 24px 0 rgba(255,255,255, 0.5);
+        --border-color: rgba(255,255,255,0.4);
+
+        /* LIGHT MODE SHADOWS (Soft Clay) */
+        /* Highlights are white, Shadows are dark gray */
+        --shadow-out: 
+            9px 9px 16px rgba(163,177,198,0.6), 
+            -9px -9px 16px rgba(255,255,255, 0.6);
+            
+        --shadow-in: 
+            inset 6px 6px 10px 0 rgba(163,177,198, 0.6), 
+            inset -6px -6px 10px 0 rgba(255,255,255, 0.8);
+            
+        --shadow-float: 
+            20px 20px 60px rgba(163,177,198,0.6), 
+            -20px -20px 60px rgba(255,255,255, 0.6);
       }
 
-      /* DARK MODE */
       body.dark-mode {
-        --bg-color: #242b38;
-        --clay-bg: #242b38;
-        --clay-surface: #242b38;
-        --clay-highlight: #2f3642;
-        --clay-shadow: #1a1f29;
+        /* DARK MODE VARIABLES */
+        --bg-color: #1a1b1e; /* Darker, deeper base */
+        --clay-bg: #1e1f23;  /* Slightly lighter surface */
         --clay-accent: #8b80fc;
+        --clay-accent-hover: #9c92ff;
         --clay-text: #e2e8f0;
+        --border-color: rgba(255,255,255,0.08); /* Sharper border for definition */
 
-        /* SHADOWS - Dark */
-        --shadow-out: 8px 8px 16px rgba(0,0,0,0.45), -8px -8px 16px rgba(255,255,255, 0.05);
-        --shadow-in: inset 6px 6px 10px 0 rgba(0,0,0,0.4), inset -4px -4px 10px 0 rgba(255,255,255, 0.05);
-        --shadow-float: 10px 10px 20px 0 rgba(0,0,0, 0.5), -5px -5px 15px 0 rgba(255,255,255, 0.03);
+        /* DARK MODE SHADOWS (Redefined for Cleanliness) */
+        /* REMOVED the "White" highlight. Replaced with Deep Shadows + Lighter Surface tones */
+        
+        --shadow-out: 
+            10px 10px 20px rgba(0,0,0,0.5),      /* Deep shadow bottom-right */
+            -8px -8px 20px rgba(255,255,255,0.03); /* Extremely subtle top-left tint (not glow) */
+
+        --shadow-in: 
+            inset 5px 5px 10px rgba(0,0,0,0.5),   /* Inner shadow top-left */
+            inset -5px -5px 10px rgba(255,255,255,0.02); /* Very faint inner highlight bottom-right */
+
+        --shadow-float: 
+            0 20px 40px rgba(0,0,0,0.6); /* Pure drop shadow for floating elements */
       }
 
       body {
         background-color: var(--bg-color);
         color: var(--clay-text);
         font-family: 'Nunito', sans-serif;
-        transition: background-color 0.3s ease, color 0.3s ease;
+        transition: background-color 0.4s ease, color 0.4s ease;
         overflow-x: hidden;
       }
 
-      /* Custom Scrollbar */
-      ::-webkit-scrollbar { width: 8px; }
-      ::-webkit-scrollbar-track { background: transparent; }
-      ::-webkit-scrollbar-thumb { background: var(--clay-shadow); border-radius: 4px; opacity: 0.5; }
-      ::-webkit-scrollbar-thumb:hover { background: var(--clay-text); }
-
-      /* Animation Utilities */
-      .animate-float { animation: float 6s ease-in-out infinite; }
-      @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
-      
+      /* --- COMPONENTS --- */
       .clay-card {
         background-color: var(--clay-bg);
         box-shadow: var(--shadow-out);
         border-radius: 1.5rem;
-        border: 1px solid rgba(255,255,255,0.1);
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-      }
-      
-      .clay-card:hover {
-        transform: translateY(-5px);
-        box-shadow: var(--shadow-float);
-      }
-
-      .clay-inset {
-        background-color: var(--clay-bg);
-        box-shadow: var(--shadow-in);
-        border-radius: 1rem;
+        border: 1px solid var(--border-color);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        will-change: transform, box-shadow;
       }
 
       .clay-btn {
         background-color: var(--clay-bg);
         color: var(--clay-accent);
         box-shadow: var(--shadow-out);
-        transition: all 0.2s ease;
-        font-weight: 700;
-        border-radius: 1rem;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 0.75rem;
         cursor: pointer;
+        font-weight: 800;
+        letter-spacing: 0.05em;
+        will-change: transform;
+        border: 1px solid var(--border-color);
+      }
+      .clay-btn:hover { 
+          transform: translateY(-4px); 
+          box-shadow: var(--shadow-float);
+          color: var(--clay-accent-hover);
+          border-color: var(--clay-accent);
+      }
+      .clay-btn:active { 
+          transform: translateY(0); 
+          box-shadow: var(--shadow-in); 
+      }
+      .clay-btn:focus-visible {
+          outline: 2px solid var(--clay-accent);
+          outline-offset: 4px;
       }
 
-      .clay-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: var(--shadow-float);
+      /* --- VISIONARY HERO ANIMATIONS --- */
+      .floating-orb {
+          position: absolute;
+          border-radius: 50%;
+          background: var(--clay-accent);
+          filter: blur(80px);
+          opacity: 0.15;
+          animation: floatOrb 10s ease-in-out infinite;
+          z-index: 0;
+          will-change: transform;
+      }
+      @keyframes floatOrb {
+          0%, 100% { transform: translate(0, 0); }
+          50% { transform: translate(30px, -50px); }
       }
 
-      .clay-btn:active {
-        box-shadow: var(--shadow-in);
-        transform: translateY(0);
+      /* --- ROBUST TURNSTYLE GALLERY --- */
+      .gallery-viewport {
+        perspective: 1200px;
+        overflow: visible;
+        padding: 60px 0;
+        display: flex;
+        justify-content: center;
       }
+      
+      .gallery-track {
+        position: relative;
+        width: 800px;
+        height: 450px;
+        transform-style: preserve-3d;
+      }
+
+      .gallery-item {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--clay-bg);
+        border-radius: 20px;
+        box-shadow: var(--shadow-out);
+        transition: all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+        overflow: hidden;
+        border: 4px solid var(--clay-bg);
+        opacity: 0;
+        transform: translateZ(-500px);
+        z-index: 0;
+        cursor: pointer;
+        will-change: transform, opacity;
+      }
+      /* Dark mode specific border for gallery items to make them pop */
+      body.dark-mode .gallery-item {
+          border: 1px solid var(--border-color);
+      }
+
+      .gallery-item:focus {
+        outline: 4px solid var(--clay-accent);
+        outline-offset: 4px;
+      }
+
+      .gallery-item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+        background-color: #111;
+      }
+
+      .gallery-caption {
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          background: rgba(0,0,0,0.8);
+          backdrop-filter: blur(10px);
+          color: white;
+          padding: 15px;
+          transform: translateY(100%);
+          transition: transform 0.3s ease;
+      }
+      .gallery-item:hover .gallery-caption, 
+      .gallery-item:focus .gallery-caption {
+          transform: translateY(0);
+      }
+
+      /* Active Center */
+      .gallery-item.active {
+        opacity: 1;
+        transform: translateX(0) translateZ(0) rotateY(0deg);
+        z-index: 20;
+        box-shadow: 0 30px 60px -10px rgba(0,0,0,0.5);
+      }
+
+      /* Right Side */
+      .gallery-item.next {
+        opacity: 1;
+        transform: translateX(50%) translateZ(-300px) rotateY(-15deg);
+        z-index: 10;
+        filter: brightness(0.6); /* Darker filter for depth */
+      }
+      
+      /* Left Side */
+      .gallery-item.prev {
+        opacity: 1;
+        transform: translateX(-50%) translateZ(-300px) rotateY(15deg);
+        z-index: 10;
+        filter: brightness(0.6);
+      }
+
+      /* Hidden Stack */
+      .gallery-item.hidden-left {
+          transform: translateX(-80%) translateZ(-600px) rotateY(25deg);
+          opacity: 0;
+          z-index: 0;
+          pointer-events: none;
+      }
+      .gallery-item.hidden-right {
+          transform: translateX(80%) translateZ(-600px) rotateY(-25deg);
+          opacity: 0;
+          z-index: 0;
+          pointer-events: none;
+      }
+
+      /* Responsive Adjustments */
+      @media (max-width: 850px) {
+        .gallery-track { width: 90%; height: 300px; }
+        .gallery-item.next { transform: translateX(20%) translateZ(-200px) rotateY(-10deg); }
+        .gallery-item.prev { transform: translateX(-20%) translateZ(-200px) rotateY(10deg); }
+      }
+
     </style>
-
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ['Nunito', 'sans-serif'],
-              mono: ['JetBrains Mono', 'monospace'],
-            },
-            colors: {
-              clay: {
-                bg: 'var(--clay-bg)',
-                accent: 'var(--clay-accent)',
-                text: 'var(--clay-text)',
-              }
-            }
-          }
-        }
-      }
-    </script>
 </head>
-<body class="min-h-screen flex flex-col">
+<body class="min-h-screen flex flex-col selection:bg-clay-accent selection:text-white">
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 px-6 py-4 backdrop-blur-md bg-clay-bg/80 border-b border-white/10 transition-colors duration-300">
+    <nav class="fixed w-full z-50 px-6 py-4 backdrop-blur-xl bg-opacity-90 border-b border-white/5 transition-all duration-300">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="p-2 bg-clay-bg rounded-xl shadow-[var(--shadow-out)] text-clay-accent">
-                    <i data-lucide="globe"></i>
+                <div class="w-10 h-10 flex items-center justify-center clay-btn rounded-xl text-clay-accent" aria-hidden="true">
+                    <i data-lucide="cpu"></i>
                 </div>
-                <span class="text-xl font-bold tracking-wide text-clay-text">Os-WebDev</span>
+                <span class="text-xl font-bold tracking-tight text-clay-text">Os-WebDev</span>
             </div>
             
             <div class="flex items-center gap-4">
-                <a href="https://github.com/dovvnloading/Os-WebDev" target="_blank" class="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-bold text-clay-text opacity-70 hover:opacity-100 transition-opacity">
+                <a href="https://github.com/dovvnloading/Os-WebDev" target="_blank" class="hidden md:flex clay-btn px-4 py-2 text-xs uppercase tracking-widest items-center gap-2" aria-label="View Source on GitHub">
                     <i data-lucide="github" class="w-4 h-4"></i> GitHub
                 </a>
-                <button id="themeToggle" class="clay-btn p-3 rounded-full flex items-center justify-center w-12 h-12">
+                <button id="themeToggle" class="clay-btn p-3 rounded-full flex items-center justify-center w-12 h-12" aria-label="Toggle Dark Mode">
                     <i data-lucide="moon" class="w-5 h-5 fill-current"></i>
                 </button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="pt-32 pb-16 px-6 relative overflow-hidden">
-        <div class="max-w-5xl mx-auto text-center relative z-10">
-            <div class="inline-flex items-center gap-2 px-4 py-2 mb-6 rounded-full clay-inset text-xs font-bold uppercase tracking-widest text-clay-accent">
-                <span class="w-2 h-2 rounded-full bg-clay-accent animate-pulse"></span>
-                v1.0 Prototype
-            </div>
+    <!-- VISIONARY LANDING SECTION -->
+    <!-- FIX: Added pb-40 to prevent button clipping -->
+    <section class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20 pb-40 px-6">
+        <!-- Background Orbs -->
+        <div class="floating-orb w-96 h-96 top-0 left-0 bg-blue-400"></div>
+        <div class="floating-orb w-[500px] h-[500px] bottom-0 right-0 bg-purple-400" style="animation-delay: -5s"></div>
+
+        <div class="max-w-6xl mx-auto text-center relative z-10">
             
-            <h1 class="text-4xl md:text-6xl font-extrabold text-clay-text mb-6 leading-tight">
-                Web Development <br/>
-                <span class="text-clay-accent">Reimagined With Agentic AI</span>
+            <div class="mb-8 inline-flex items-center gap-2 bg-clay-bg/50 backdrop-blur-md border border-white/10 rounded-full px-5 py-2 animate-bounce shadow-lg">
+                <span class="flex h-3 w-3 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-clay-accent opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-3 w-3 bg-clay-accent"></span>
+                </span>
+                <span class="text-xs font-extrabold uppercase tracking-widest text-clay-text">The Future of Creation is Here</span>
+            </div>
+
+            <h1 class="text-6xl md:text-8xl font-black text-clay-text mb-6 leading-tight tracking-tight">
+                Dream It. <br>
+                Speak It. <br>
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-clay-accent to-blue-400">Publish It.</span>
             </h1>
-            
-            <p class="text-lg md:text-xl text-clay-text opacity-70 max-w-2xl mx-auto mb-10 leading-relaxed">
-                A futuristic, browser-based IDE powered by Google Gemini. Bridge the gap between natural language and functional code with an Agentic Architect/Developer team.
+
+            <p class="text-xl md:text-3xl text-clay-text opacity-70 max-w-4xl mx-auto mb-12 font-light leading-relaxed">
+                The barrier to entry has vanished. <br>
+                Whether you're an artist, a writer, or a dreamer—turn your imagination into functional reality with your own <strong>AI Design Team</strong>.
             </p>
 
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-6 mb-16">
-                <a href="https://github.com/dovvnloading/Os-WebDev" class="clay-btn px-8 py-4 flex items-center gap-3 text-lg">
-                    <i data-lucide="github"></i>
-                    View Repository
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-8">
+                <a href="#demo" class="clay-btn px-10 py-5 text-xl flex items-center gap-3 group" aria-label="Watch Demo Video">
+                    <i data-lucide="play-circle" class="group-hover:text-pink-500 transition-colors"></i>
+                    Watch the Demo
                 </a>
-                <a href="#features" class="px-8 py-4 text-clay-text font-bold hover:text-clay-accent transition-colors">
-                    Explore Features
+                <a href="https://github.com/dovvnloading/Os-WebDev" class="flex items-center gap-2 text-clay-text font-bold hover:text-clay-accent transition-colors" aria-label="Start Building Locally">
+                    Start Building Locally <i data-lucide="arrow-right"></i>
                 </a>
             </div>
 
-            <!-- Hero Image Clay Container -->
-            <div class="clay-card p-4 animate-float">
-                <img src="https://github.com/user-attachments/assets/a253ed59-79b2-4db7-81cc-cce4fc34e022" alt="App Interface" class="rounded-2xl w-full border border-white/20">
+            <!-- Floating UI Elements Decoration (Decorative only) -->
+            <div class="hidden md:block absolute top-1/2 -left-20 clay-card p-4 rotate-12 opacity-80 pointer-events-none" aria-hidden="true">
+                <div class="flex gap-2 mb-2"><div class="w-3 h-3 rounded-full bg-red-400"></div><div class="w-3 h-3 rounded-full bg-yellow-400"></div></div>
+                <div class="h-2 w-24 bg-gray-300 rounded mb-2"></div>
+                <div class="h-2 w-16 bg-gray-300 rounded"></div>
             </div>
-        </div>
-    </header>
-
-    <!-- Mission -->
-    <section class="py-16 px-6">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-2xl font-bold text-clay-text mb-6">Democratizing Creation</h2>
-            <p class="text-clay-text opacity-80 leading-relaxed text-lg">
-                This project acts as a functional prototype intended to break down the barriers of entry for web development and design. By integrating advanced artificial intelligence directly into the workspace, Os-WebDev aims to allow individuals to build complex logic and interfaces regardless of their prior coding experience.
-            </p>
+             <div class="hidden md:block absolute top-1/3 -right-20 clay-card p-4 -rotate-12 opacity-80 pointer-events-none" aria-hidden="true">
+                <i data-lucide="palette" class="w-8 h-8 text-clay-accent"></i>
+            </div>
         </div>
     </section>
 
-    <!-- Live Demo Video Section (New) -->
-    <section class="py-12 px-6">
-        <div class="max-w-5xl mx-auto">
-            <div class="text-center mb-8">
-                <div class="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full clay-inset text-[10px] font-bold uppercase tracking-widest text-clay-accent opacity-70">
-                    <i data-lucide="play-circle" class="w-3 h-3"></i> Live Demo
+    <!-- ROBUST TURNSTYLE GALLERY -->
+    <section class="py-20 bg-black/5 relative overflow-hidden" aria-labelledby="gallery-heading">
+        <div class="max-w-7xl mx-auto text-center mb-10 px-6">
+            <h2 id="gallery-heading" class="text-4xl font-extrabold text-clay-text mb-4">A Masterpiece of Interface Design</h2>
+            <p class="text-lg text-clay-text opacity-60">A tactile, responsive environment that feels alive. Use Arrow Keys to Navigate.</p>
+        </div>
+
+        <!-- Viewport -->
+        <div class="gallery-viewport" role="region" aria-label="Image Gallery">
+            <div class="gallery-track" id="galleryTrack">
+                <!-- Image 1 -->
+                <div class="gallery-item" data-index="0" tabindex="0" role="button" aria-label="View Welcome Screen">
+                    <img src="https://github.com/user-attachments/assets/e14db417-5ff9-4a39-bc92-e1df0d312c16" alt="Welcome Screen showing Claymorphic UI" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiB2aWV3Qm94PSIwIDAgODAwIDQ1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzI0MmIzOCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjN2E4Yjk5IiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg==';">
+                    <div class="gallery-caption">
+                        <h3 class="text-xl font-bold text-white">The Hub</h3>
+                        <p class="text-sm opacity-80">Your central command center for AI development.</p>
+                    </div>
                 </div>
-                <h2 class="text-2xl font-bold text-clay-text">See it in Action</h2>
+
+                <!-- Image 2 -->
+                <div class="gallery-item" data-index="1" tabindex="0" role="button" aria-label="View Developer Mode">
+                    <img src="https://github.com/user-attachments/assets/42bc1a76-5f23-4b5f-bef8-6d5523014020" alt="Developer Mode showing code editor and file tree" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiB2aWV3Qm94PSIwIDAgODAwIDQ1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzI0MmIzOCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjN2E4Yjk5IiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg==';">
+                    <div class="gallery-caption">
+                        <h3 class="text-xl font-bold text-white">Full IDE Control</h3>
+                        <p class="text-sm opacity-80">Access file systems and raw code when you need precision.</p>
+                    </div>
+                </div>
+
+                <!-- Image 3 -->
+                <div class="gallery-item" data-index="2" tabindex="0" role="button" aria-label="View Live Execution">
+                    <img src="https://github.com/user-attachments/assets/591779ab-9a17-465f-8072-cce3d3670725" alt="Live Preview of the generated website" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiB2aWV3Qm94PSIwIDAgODAwIDQ1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzI0MmIzOCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjN2E4Yjk5IiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg==';">
+                    <div class="gallery-caption">
+                        <h3 class="text-xl font-bold text-white">Live Execution</h3>
+                        <p class="text-sm opacity-80">Code runs instantly in a sandboxed, secure environment.</p>
+                    </div>
+                </div>
+
+                <!-- Image 4 -->
+                <div class="gallery-item" data-index="3" tabindex="0" role="button" aria-label="View Agentic Workflow">
+                    <img src="https://github.com/user-attachments/assets/864ff415-4682-4c0b-abef-3fd7600bb6a9" alt="Agentic AI Chat Workflow" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiB2aWV3Qm94PSIwIDAgODAwIDQ1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzI0MmIzOCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjN2E4Yjk5IiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg==';">
+                    <div class="gallery-caption">
+                        <h3 class="text-xl font-bold text-white">Agentic Logic</h3>
+                        <p class="text-sm opacity-80">Watch as AI Architects plan and Developers execute.</p>
+                    </div>
+                </div>
+
+                <!-- Image 5 -->
+                <div class="gallery-item" data-index="4" tabindex="0" role="button" aria-label="View Dark Mode">
+                    <img src="https://github.com/user-attachments/assets/de63218b-fad6-4332-86cc-91b53d779344" alt="Dark Mode Interface" onerror="this.onerror=null;this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI4MDAiIGhlaWdodD0iNDUwIiB2aWV3Qm94PSIwIDAgODAwIDQ1MCI+PHJlY3Qgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgZmlsbD0iIzI0MmIzOCIvPjx0ZXh0IHg9IjUwJSIgeT0iNTAlIiBkb21pbmFudC1iYXNlbGluZT0ibWlkZGxlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjN2E4Yjk5IiBmb250LXNpemU9IjI0IiBmb250LWZhbWlseT0ic2Fucy1zZXJpZiI+SW1hZ2UgTm90IEZvdW5kPC90ZXh0Pjwvc3ZnPg==';">
+                    <div class="gallery-caption">
+                        <h3 class="text-xl font-bold text-white">Adaptive Aesthetics</h3>
+                        <p class="text-sm opacity-80">Seamless switching between Light and Dark claymorphism.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Gallery Controls -->
+        <div class="flex justify-center gap-8 mt-10">
+            <button id="prevBtn" class="clay-btn w-16 h-16 flex items-center justify-center rounded-full text-xl hover:scale-110 focus:ring-4 ring-offset-2 ring-clay-accent" aria-label="Previous Image">
+                <i data-lucide="arrow-left"></i>
+            </button>
+            <button id="nextBtn" class="clay-btn w-16 h-16 flex items-center justify-center rounded-full text-xl hover:scale-110 focus:ring-4 ring-offset-2 ring-clay-accent" aria-label="Next Image">
+                <i data-lucide="arrow-right"></i>
+            </button>
+        </div>
+    </section>
+
+    <!-- VIDEO SECTION -->
+    <section id="demo" class="py-20 px-6">
+        <div class="max-w-5xl mx-auto">
+            <div class="text-center mb-10">
+                <div class="inline-flex items-center gap-2 px-3 py-1 mb-4 rounded-full clay-inset text-[10px] font-bold uppercase tracking-widest text-clay-accent opacity-70">
+                    <i data-lucide="youtube" class="w-3 h-3"></i> Watch Tutorial
+                </div>
+                <h2 class="text-4xl font-extrabold text-clay-text">See The Magic Happen</h2>
             </div>
             
             <!-- Clay Monitor Container -->
-            <div class="clay-card p-4 md:p-8 relative group">
+            <div class="clay-card p-4 md:p-8 relative group hover:scale-[1.01] transition-transform duration-500">
                 <!-- Sunken Screen Effect -->
                 <div class="clay-inset p-2 rounded-2xl overflow-hidden bg-black/5">
                     <div class="relative w-full aspect-video rounded-xl overflow-hidden shadow-inner bg-black">
+                        <!-- Loading="lazy" added for performance -->
                         <iframe 
-                            class="absolute top-0 left-0 w-full h-full"
-                            src="https://www.youtube.com/embed/RvQ3igVFZ4Q?si=a6jGKMzcALlBWoOJ" 
-                            title="Os-WebDev Demo"
+                            class="absolute top-0 left-0 w-full h-full" 
+                            src="https://www.youtube.com/embed/RUpJBC4BIL8?si=VpkBb_8vbBMbkxoB" 
+                            title="Os-WebDev Walkthrough" 
                             frameborder="0" 
+                            loading="lazy"
                             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" 
                             allowfullscreen>
                         </iframe>
                     </div>
@@ -222,254 +415,242 @@
         </div>
     </section>
 
-    <!-- Features Grid -->
-    <section id="features" class="py-16 px-6 bg-black/5">
+    <!-- ARCHITECTURE / TECHNICAL DETAILS -->
+    <section class="py-20 px-6 relative">
         <div class="max-w-7xl mx-auto">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="mb-16 text-center">
+                <h2 class="text-3xl font-bold text-clay-text mb-4">Under The Hood</h2>
+                <div class="w-24 h-1 bg-clay-accent mx-auto rounded-full"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
                 
-                <!-- Feature 1 -->
-                <div class="clay-card p-8 flex flex-col h-full">
-                    <div class="w-12 h-12 rounded-2xl clay-inset flex items-center justify-center text-clay-accent mb-6">
-                        <i data-lucide="users"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-clay-text mb-3">Agentic Workflow</h3>
-                    <p class="text-sm text-clay-text opacity-70">
-                        Orchestrates a team of AI agents. The <strong>Architect</strong> (Gemini 2.5) plans the strategy, and the <strong>Developer</strong> (Gemini 3 Pro) executes high-fidelity code.
-                    </p>
+                <!-- Code Snippet Visual -->
+                <div class="clay-inset p-6 rounded-3xl overflow-x-auto border border-white/10 order-2 md:order-1">
+<pre class="font-mono text-sm text-clay-text leading-relaxed">
+<span class="text-clay-accent font-bold">// The Shadow Protocol</span>
+<span class="opacity-50">&lt;!-- AI writes this invisibly --&gt;</span>
+&lt;edit path="<span class="text-green-500">styles.css</span>"&gt;
+  &lt;original&gt;
+    .hero { background: #fff; }
+  &lt;/original&gt;
+  &lt;modified&gt;
+    .hero { 
+      background: <span class="text-blue-500">var(--clay-bg)</span>;
+      box-shadow: <span class="text-blue-500">var(--shadow-out)</span>; 
+    }
+  &lt;/modified&gt;
+&lt;/edit&gt;
+
+<span class="text-clay-accent font-bold">// The Client Engine</span>
+<span class="text-purple-500">const</span> applyUpdate = (xml) => {
+  vfs.update(xml);
+  iframe.reload(); <span class="opacity-50">// Instant Refresh</span>
+};
+</pre>
                 </div>
 
-                <!-- Feature 2 -->
-                <div class="clay-card p-8 flex flex-col h-full">
-                    <div class="w-12 h-12 rounded-2xl clay-inset flex items-center justify-center text-clay-accent mb-6">
-                        <i data-lucide="hard-drive"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-clay-text mb-3">Virtual File System</h3>
-                    <p class="text-sm text-clay-text opacity-70">
-                        A fully in-memory client-side file system. Create, delete, and edit HTML/CSS/JS files with dynamic dependency injection into the preview.
-                    </p>
-                </div>
-
-                <!-- Feature 3 -->
-                <div class="clay-card p-8 flex flex-col h-full">
-                    <div class="w-12 h-12 rounded-2xl clay-inset flex items-center justify-center text-clay-accent mb-6">
-                        <i data-lucide="wand-2"></i>
-                    </div>
-                    <h3 class="text-xl font-bold text-clay-text mb-3">Shadow Protocol</h3>
-                    <p class="text-sm text-clay-text opacity-70">
-                        Uses a hidden XML protocol <code>&lt;file&gt;</code> to inject code directly into the IDE, keeping your chat interface clean and conversational.
-                    </p>
-                </div>
-
-            </div>
-        </div>
-    </section>
-
-    <!-- Themes Gallery -->
-    <section class="py-20 px-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row items-end justify-between mb-10 gap-4">
-                <div>
-                    <h2 class="text-3xl font-bold text-clay-text mb-2">Adaptive Aesthetics</h2>
-                    <p class="text-clay-text opacity-60">Seamless transitions between light and dark claymorphic themes.</p>
-                </div>
-                <div class="flex gap-2">
-                    <span class="w-3 h-3 rounded-full bg-[#e0e5ec] border border-gray-400"></span>
-                    <span class="w-3 h-3 rounded-full bg-[#242b38] border border-gray-600"></span>
-                    <span class="w-3 h-3 rounded-full bg-[#6d5dfc]"></span>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div class="clay-card p-4 group">
-                    <div class="mb-4 text-center font-bold text-clay-text text-sm opacity-50 uppercase tracking-widest">Light Mode</div>
-                    <img src="https://github.com/user-attachments/assets/28f2c8af-fb2a-47fa-8a66-2e44a679c5a4" class="rounded-xl w-full transition-transform duration-500 group-hover:scale-[1.02]" alt="Light Mode">
-                </div>
-                <div class="clay-card p-4 group" style="--clay-bg: #242b38; --shadow-out: 8px 8px 16px rgba(0,0,0,0.45), -8px -8px 16px rgba(255,255,255, 0.05);">
-                    <div class="mb-4 text-center font-bold text-[#e2e8f0] text-sm opacity-50 uppercase tracking-widest">Dark Mode</div>
-                    <img src="https://github.com/user-attachments/assets/a3c411a3-83f3-411d-8aca-719d27e0d18f" class="rounded-xl w-full transition-transform duration-500 group-hover:scale-[1.02]" alt="Dark Mode">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Full Gallery -->
-    <section class="py-16 px-6 bg-black/5">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-3xl font-bold text-clay-text mb-12 text-center">Application Gallery</h2>
-            
-            <div class="space-y-16">
-                
-                <!-- Gallery Item 1: Developer Environment -->
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
-                    <div class="lg:col-span-2 space-y-4">
-                        <div class="w-10 h-10 rounded-xl clay-inset flex items-center justify-center text-clay-accent">
-                            <i data-lucide="monitor"></i>
-                        </div>
-                        <h3 class="text-2xl font-bold text-clay-text">Interactive Development</h3>
-                        <p class="text-clay-text opacity-70 leading-relaxed">
-                            The interface shows a user leveraging the "Agent Team" to upgrade a landing page. While the center pane facilitates manual coding with context-aware AI tools, the right-hand chat panel handles complex architectural changes—automatically implementing a neumorphic/claymorphic hybrid design and responsive logic based on a single natural language prompt.
-                        </p>
-                    </div>
-                    <div class="lg:col-span-3 clay-card p-3">
-                        <img src="https://github.com/user-attachments/assets/81b46409-1ef2-4bfc-b115-f57f92afdc08" class="rounded-xl w-full" alt="Developer Environment Full View">
-                    </div>
-                </div>
-
-                <!-- Gallery Item 2: Simple Mode -->
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
-                     <div class="lg:col-span-3 clay-card p-3 order-2 lg:order-1">
-                        <img src="https://github.com/user-attachments/assets/44ffeb61-0a4e-46e7-9266-39a425b0e452" class="rounded-xl w-full" alt="Simple Mode Context">
-                    </div>
-                    <div class="lg:col-span-2 space-y-4 order-1 lg:order-2">
-                        <div class="w-10 h-10 rounded-xl clay-inset flex items-center justify-center text-clay-accent">
+                <!-- Features Text -->
+                <div class="space-y-8 order-1 md:order-2">
+                    <div class="flex gap-4">
+                        <div class="mt-1 w-10 h-10 rounded-lg clay-btn flex items-center justify-center shrink-0" aria-hidden="true">
                             <i data-lucide="zap"></i>
                         </div>
-                        <h3 class="text-2xl font-bold text-clay-text">Conversational Iteration</h3>
-                        <p class="text-clay-text opacity-70 leading-relaxed">
-                            The screenshot displays the <strong>Os-WebDev Simple Mode</strong>, designed for conversational, code-free iteration. The interface is dominated by the <strong>live, rendered output</strong> of the project—a dark-mode, claymorphic landing page—in the center pane. On the right, the <strong>Web Designer AI chat</strong> manages all development tasks, showing the AI executing complex architectural changes based on the user's high-level command ("now make this even better").
-                        </p>
-                    </div>
-                </div>
-
-                 <!-- Gallery Item 3: Live Preview -->
-                 <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
-                    <div class="lg:col-span-2 space-y-4">
-                        <div class="w-10 h-10 rounded-xl clay-inset flex items-center justify-center text-clay-accent">
-                            <i data-lucide="play-circle"></i>
+                        <div>
+                            <h3 class="text-xl font-bold text-clay-text">Client-Side Velocity</h3>
+                            <p class="text-clay-text opacity-70">
+                                No backend server latency. The Virtual File System (VFS) lives in your browser's memory, making updates instantaneous.
+                            </p>
                         </div>
-                        <h3 class="text-2xl font-bold text-clay-text">Rapid Prototyping</h3>
-                        <p class="text-clay-text opacity-70 leading-relaxed">
-                            This screenshot captures the direct translation of a natural language command into a rendered web page. The central panel displays the <strong>live, light-themed, claymorphic landing page</strong> requested by the user. The right-hand chat confirms the AI's execution and shows the system is actively processing the user's follow-up request ("Coordinating agents..."), demonstrating the platform's seamless, rapid-fire conversational workflow.
-                        </p>
                     </div>
-                    <div class="lg:col-span-3 clay-card p-3">
-                        <img src="https://github.com/user-attachments/assets/e77468dc-bbc7-41a5-8ea4-eb1f8e6d87de" class="rounded-xl w-full" alt="Live Preview Generation">
+
+                    <div class="flex gap-4">
+                        <div class="mt-1 w-10 h-10 rounded-lg clay-btn flex items-center justify-center shrink-0" aria-hidden="true">
+                            <i data-lucide="bot"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-clay-text">Gemini 3 Pro Reasoning</h3>
+                            <p class="text-clay-text opacity-70">
+                                Utilizes Google's reasoning models to "Plan" before "Coding", ensuring complex logic isn't just hallucinated, but architected.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex gap-4">
+                        <div class="mt-1 w-10 h-10 rounded-lg clay-btn flex items-center justify-center shrink-0" aria-hidden="true">
+                            <i data-lucide="shield-check"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-clay-text">Sandboxed Security</h3>
+                            <p class="text-clay-text opacity-70">
+                                User code runs in a strictly isolated iframe context, allowing you to experiment safely without affecting the host OS.
+                            </p>
+                        </div>
                     </div>
                 </div>
-
-                <!-- Gallery Item 4: Developer Tools -->
-                <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 items-center">
-                    <div class="lg:col-span-3 clay-card p-3 order-2 lg:order-1">
-                       <img src="https://github.com/user-attachments/assets/5a22397c-cd11-4673-8949-43e6e1b144ba" class="rounded-xl w-full" alt="Developer Mode Analysis">
-                   </div>
-                   <div class="lg:col-span-2 space-y-4 order-1 lg:order-2">
-                       <div class="w-10 h-10 rounded-xl clay-inset flex items-center justify-center text-clay-accent">
-                           <i data-lucide="code"></i>
-                       </div>
-                       <h3 class="text-2xl font-bold text-clay-text">Developer Mode</h3>
-                       <p class="text-clay-text opacity-70 leading-relaxed">
-                           The screenshot shows <strong>Os-WebDev Developer Mode</strong>, featuring the full IDE structure with the code editor in dark theme. The central action highlights the contextual <strong>'AI Tools' menu</strong>, which is activated over selected HTML, offering granular assistance like <strong>Refactor</strong> and <strong>Find Bugs</strong>. On the right, the <strong>Agent Team panel</strong> provides a transparent, file-by-file audit log of the complex changes recently implemented by the AI.
-                       </p>
-                   </div>
-               </div>
 
             </div>
         </div>
     </section>
 
-    <!-- Installation -->
-    <section class="py-20 px-6">
-        <div class="max-w-3xl mx-auto">
-            <h2 class="text-3xl font-bold text-clay-text mb-8 text-center">Get Started Locally</h2>
+    <!-- Footer -->
+    <footer class="py-12 px-6 mt-auto border-t border-black/5 bg-clay-bg">
+        <div class="max-w-7xl mx-auto flex flex-col items-center text-center">
             
-            <div class="clay-card p-6 md:p-8">
-                <div class="flex items-center gap-2 mb-4 border-b border-gray-400/20 pb-4">
-                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
-                    <span class="ml-2 font-mono text-xs text-clay-text opacity-50">bash</span>
-                </div>
-                
-                <div class="space-y-4 font-mono text-sm overflow-x-auto">
-                    <div>
-                        <p class="text-clay-text opacity-50 mb-1"># 1. Clone the repository</p>
-                        <div class="clay-inset p-3 text-clay-text">
-                            git clone https://github.com/dovvnloading/Os-WebDev.git<br>
-                            cd Os-WebDev
-                        </div>
-                    </div>
-                    
-                    <div>
-                        <p class="text-clay-text opacity-50 mb-1"># 2. Install dependencies</p>
-                        <div class="clay-inset p-3 text-clay-text">
-                            npm install
-                        </div>
-                    </div>
-
-                    <div>
-                        <p class="text-clay-text opacity-50 mb-1"># 3. Setup Environment (.env)</p>
-                        <div class="clay-inset p-3 text-clay-text">
-                            GEMINI_API_KEY=your_api_key_here
-                        </div>
-                    </div>
-
-                    <div>
-                        <p class="text-clay-text opacity-50 mb-1"># 4. Run Development Server</p>
-                        <div class="clay-inset p-3 text-clay-accent font-bold">
-                            npm run dev
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-<!-- Footer -->
-    <footer class="py-12 px-6 border-t border-white/10 bg-clay-bg mt-auto">
-        <div class="max-w-7xl mx-auto flex flex-col items-center justify-center text-center space-y-6">
-            
-            <!-- Social Links -->
-            <div class="flex items-center gap-4 text-clay-text opacity-60">
-                <a href="https://github.com/dovvnloading/Os-WebDev" target="_blank" class="hover:text-clay-accent transition-colors">
-                    <i data-lucide="github" class="w-5 h-5"></i>
+            <div class="flex items-center gap-6 mb-8">
+                <a href="https://x.com/D3VAUX" target="_blank" aria-label="Twitter Profile" class="clay-btn w-12 h-12 flex items-center justify-center rounded-full hover:text-blue-400">
+                    <i data-lucide="twitter"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/matt-wesney" target="_blank" aria-label="LinkedIn Profile" class="clay-btn w-12 h-12 flex items-center justify-center rounded-full hover:text-blue-700">
+                    <i data-lucide="linkedin"></i>
+                </a>
+                <a href="https://www.youtube.com/@mattwesney" target="_blank" aria-label="YouTube Channel" class="clay-btn w-12 h-12 flex items-center justify-center rounded-full hover:text-red-500">
+                    <i data-lucide="youtube"></i>
+                </a>
+                <a href="https://github.com/dovvnloading/Os-WebDev" target="_blank" aria-label="GitHub Repository" class="clay-btn w-12 h-12 flex items-center justify-center rounded-full hover:text-gray-900">
+                    <i data-lucide="github"></i>
                 </a>
             </div>
 
-            <!-- Developer Credit -->
-            <div class="flex flex-col items-center gap-1 my-2">
-                <span class="text-[10px] text-clay-text opacity-50 uppercase tracking-widest">Designed & Developed by</span>
-                <span class="text-base font-bold text-clay-accent tracking-wide">Matthew Robert Wesney</span>
-            </div>
-
-            <!-- Disclaimer -->
-            <p class="text-sm text-clay-text opacity-50 max-w-md">
-                Os-WebDev is a prototype. Use within a secure environment. No backend server is required; all code generation and execution happen locally.
-            </p>
-
-            <!-- Special Thanks -->
-            <div class="text-xs text-clay-text opacity-40 font-bold uppercase tracking-widest">
-                Special thanks to Google DeepMind & The Open Source Community
+            <div class="mb-4">
+                <p class="text-clay-text font-bold text-lg">Designed & Developed by Matt Wesney</p>
+                <p class="text-xs text-clay-accent font-mono uppercase tracking-widest mt-1">Os-WebDev v2.0</p>
             </div>
             
-            <!-- License -->
-            <div class="text-xs text-clay-text opacity-30">
-                MIT License &copy; 2024
-            </div>
+            <p class="text-xs text-clay-text opacity-50 max-w-md mx-auto leading-relaxed">
+                Open Source. MIT License. <br>
+                Powered by React 19, Vite, and Google Gemini.
+            </p>
         </div>
     </footer>
 
-    <!-- Scripts -->
+    <!-- LOGIC SCRIPTS -->
     <script>
-        // Icon initialization
-        lucide.createIcons();
-
-        // Theme Toggle Logic
-        const themeToggleBtn = document.getElementById('themeToggle');
-        const body = document.body;
-        const icon = themeToggleBtn.querySelector('i');
-
-        themeToggleBtn.addEventListener('click', () => {
-            body.classList.toggle('dark-mode');
+        document.addEventListener('DOMContentLoaded', () => {
             
-            // Update Icon
-            if (body.classList.contains('dark-mode')) {
-                icon.setAttribute('data-lucide', 'sun');
-                // Re-render icon
+            // --- ICONS INITIALIZATION ---
+            if (typeof lucide !== 'undefined') {
                 lucide.createIcons();
             } else {
-                icon.setAttribute('data-lucide', 'moon');
-                lucide.createIcons();
+                console.warn('Lucide icons failed to load from CDN.');
             }
+
+            // --- THEME LOGIC ---
+            const themeBtn = document.getElementById('themeToggle');
+            const body = document.body;
+
+            // 1. Check System Preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                body.classList.add('dark-mode');
+                // Update icon immediately if dark mode
+                const icon = themeBtn?.querySelector('i');
+                if (icon) icon.setAttribute('data-lucide', 'sun');
+            }
+
+            // 2. Toggle Event
+            if (themeBtn) {
+                themeBtn.addEventListener('click', () => {
+                    body.classList.toggle('dark-mode');
+                    const isDark = body.classList.contains('dark-mode');
+                    const icon = themeBtn.querySelector('i');
+                    if (icon) {
+                        icon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+                        if (typeof lucide !== 'undefined') lucide.createIcons();
+                    }
+                });
+            }
+
+            // --- ROBUST TURNSTYLE GALLERY LOGIC ---
+            let currentIndex = 0;
+            const items = document.querySelectorAll('.gallery-item');
+            const itemCount = items.length;
+            const nextBtn = document.getElementById('nextBtn');
+            const prevBtn = document.getElementById('prevBtn');
+
+            // Safety check: Don't run gallery logic if no items exist
+            if (itemCount === 0) {
+                console.warn('Gallery items not found.');
+                return;
+            }
+
+            function updateGallery() {
+                items.forEach((item, index) => {
+                    // Reset styling classes
+                    item.className = 'gallery-item';
+                    
+                    // Allow focusing via keyboard
+                    item.setAttribute('tabindex', index === currentIndex ? '0' : '-1');
+
+                    // Calculate Circular Difference
+                    let diff = (index - currentIndex) % itemCount;
+                    if (diff < 0) diff += itemCount;
+                    
+                    // Center the math logic relative to the active item
+                    // e.g., if total is 5: diffs become 0, 1, 2, -2, -1
+                    if (diff > itemCount / 2) diff -= itemCount;
+
+                    // Apply Classes based on position
+                    if (diff === 0) {
+                        item.classList.add('active');
+                        item.focus({preventScroll: true}); // Auto-focus active for accessibility? Optional.
+                    } else if (diff === 1) {
+                        item.classList.add('next');
+                    } else if (diff === -1) {
+                        item.classList.add('prev');
+                    } else if (diff > 0) {
+                        item.classList.add('hidden-right');
+                    } else {
+                        item.classList.add('hidden-left');
+                    }
+                });
+            }
+
+            // Navigation Helpers
+            const goNext = () => {
+                currentIndex = (currentIndex + 1) % itemCount;
+                updateGallery();
+            };
+
+            const goPrev = () => {
+                currentIndex = (currentIndex - 1 + itemCount) % itemCount;
+                updateGallery();
+            };
+
+            // Event Listeners
+            if (nextBtn) nextBtn.addEventListener('click', goNext);
+            if (prevBtn) prevBtn.addEventListener('click', goPrev);
+
+            // Click Item to Jump
+            items.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    currentIndex = index;
+                    updateGallery();
+                });
+
+                // Keyboard Support (Enter/Space on focused item)
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        currentIndex = index;
+                        updateGallery();
+                    }
+                });
+            });
+
+            // Global Arrow Key Navigation
+            document.addEventListener('keydown', (e) => {
+                // Only hijack arrows if gallery is in viewport (simple check) or just globally for this demo page
+                if (e.key === 'ArrowRight') goNext();
+                if (e.key === 'ArrowLeft') goPrev();
+            });
+
+            // Initial Paint
+            // Set timeout to ensure CSS transitions don't fire on load
+            setTimeout(() => {
+                updateGallery();
+                // Re-render icons incase dynamic content shifted
+                if (typeof lucide !== 'undefined') lucide.createIcons();
+            }, 50);
+
         });
     </script>
 </body>
