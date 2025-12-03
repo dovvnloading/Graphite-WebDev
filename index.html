@@ -1,278 +1,417 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Graphite: WebDev | Cognitive Architecture</title>
+    <meta name="description" content="Graphite: WebDev - The Cognitive Architect for Web Development.">
+    <title>Graphite: WebDev | The Future of Development</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind (Via CDN) -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
     <style>
-        :root {
-            --bg-dark: #0f1115;
-            --bg-card: #181a20;
-            --accent: #6d5dfc;
-            --text-primary: #e2e8f0;
-            --text-secondary: #94a3b8;
-        }
+      /* --- GRAPHITE THEME CONFIGURATION --- */
+      :root {
+        --bg-color: #eef2f6;
+        --clay-bg: #eef2f6;
+        --text-main: #334155;
+        --text-muted: #64748b;
+        --accent: #4f46e5; /* Indigo */
+        --accent-hover: #4338ca;
         
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            overflow-x: hidden;
-        }
+        /* Soft Clay Shadows - Refined & Clean */
+        --shadow-out: 
+            8px 8px 16px rgba(166, 180, 200, 0.5), 
+            -8px -8px 16px rgba(255, 255, 255, 0.8);
+            
+        --shadow-in: 
+            inset 6px 6px 10px rgba(166, 180, 200, 0.5), 
+            inset -6px -6px 10px rgba(255, 255, 255, 0.8);
+            
+        --shadow-float: 
+            20px 20px 40px rgba(166, 180, 200, 0.4), 
+            -20px -20px 40px rgba(255, 255, 255, 0.8);
 
-        .font-mono { font-family: 'JetBrains Mono', monospace; }
+        /* Scrollbar Colors (Light) */
+        --scrollbar-thumb: #cbd5e1;
+        --scrollbar-track: #f1f5f9;
+      }
 
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg-dark); }
-        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+      body.dark-mode {
+        --bg-color: #1e1e24; 
+        --clay-bg: #1e1e24;
+        --text-main: #e2e8f0;
+        --text-muted: #94a3b8;
+        --accent: #818cf8;
+        --accent-hover: #a5b4fc;
 
-        /* Glassmorphism utilities */
-        .glass {
-            background: rgba(24, 26, 32, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
+        /* Deep Matte Shadows */
+        --shadow-out: 
+            10px 10px 20px rgba(0,0,0,0.4),      
+            -5px -5px 15px rgba(255,255,255,0.05); 
 
-        .gradient-text {
-            background: linear-gradient(135deg, #fff 0%, #94a3b8 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+        --shadow-in: 
+            inset 5px 5px 10px rgba(0,0,0,0.4),   
+            inset -5px -5px 10px rgba(255,255,255,0.03);
 
-        .glow-accent {
-            box-shadow: 0 0 40px -10px rgba(109, 93, 252, 0.3);
-        }
+        --shadow-float: 
+            0 25px 50px rgba(0,0,0,0.5); 
 
-        /* Image Hover Effects */
-        .screenshot-card {
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .screenshot-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.5);
-            border-color: rgba(109, 93, 252, 0.4);
-        }
+        /* Scrollbar Colors (Dark) */
+        --scrollbar-thumb: #475569;
+        --scrollbar-track: #1e1e24;
+      }
 
-        /* Animation */
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-10px); }
-            100% { transform: translateY(0px); }
-        }
-        .animate-float { animation: float 6s ease-in-out infinite; }
+      /* --- SCROLLBAR STYLING --- */
+      ::-webkit-scrollbar {
+          width: 8px;
+      }
+      ::-webkit-scrollbar-track {
+          background: var(--scrollbar-track);
+      }
+      ::-webkit-scrollbar-thumb {
+          background: var(--scrollbar-thumb);
+          border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+          background: var(--accent);
+      }
+
+      body {
+        background-color: var(--bg-color);
+        color: var(--text-main);
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        transition: background-color 0.4s ease, color 0.4s ease;
+        overflow-x: hidden;
+      }
+
+      h1, h2, h3 { letter-spacing: -0.03em; }
+      code { font-family: 'JetBrains Mono', monospace; }
+
+      /* --- CLAY COMPONENTS --- */
+      .clay-card {
+        background-color: var(--clay-bg);
+        box-shadow: var(--shadow-out);
+        border-radius: 1.5rem;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        overflow: hidden;
+        border: 1px solid rgba(255,255,255,0.1);
+      }
+      
+      .clay-card:hover {
+        transform: translateY(-8px);
+        box-shadow: var(--shadow-float);
+      }
+
+      .clay-inset {
+        background-color: var(--clay-bg);
+        box-shadow: var(--shadow-in);
+        border-radius: 1rem;
+      }
+
+      .clay-btn {
+        background-color: var(--clay-bg);
+        color: var(--accent);
+        box-shadow: var(--shadow-out);
+        transition: all 0.2s ease;
+        border-radius: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+      }
+      .clay-btn:hover { 
+          transform: translateY(-2px); 
+          color: var(--accent-hover);
+      }
+      .clay-btn:active { 
+          transform: translateY(0); 
+          box-shadow: var(--shadow-in); 
+      }
+
+      .cta-btn {
+          background-color: var(--accent);
+          color: white;
+          box-shadow: 0 10px 20px -5px rgba(79, 70, 229, 0.4);
+      }
+      .cta-btn:hover {
+          background-color: var(--accent-hover);
+          color: white;
+          transform: translateY(-2px);
+          box-shadow: 0 15px 30px -5px rgba(79, 70, 229, 0.5);
+      }
+
+      /* --- IMAGE HANDLING --- */
+      .screenshot-container {
+          overflow: hidden;
+          border-radius: 1rem;
+          /* Removed inset border to make images pop more */
+          border: 1px solid rgba(0,0,0,0.05); 
+          box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      }
+      
+      .screenshot-img {
+          width: 100%;
+          height: auto;
+          display: block;
+      }
+
+      /* --- ANIMATIONS --- */
+      .fade-in-up {
+          animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+          opacity: 0;
+          transform: translateY(20px);
+      }
+      
+      @keyframes fadeInUp {
+          to { opacity: 1; transform: translateY(0); }
+      }
+
+      .delay-100 { animation-delay: 0.1s; }
+      .delay-200 { animation-delay: 0.2s; }
+      .delay-300 { animation-delay: 0.3s; }
+
     </style>
 </head>
-<body class="antialiased">
+<body class="selection:bg-indigo-500 selection:text-white">
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 glass border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-2">
-                <i data-lucide="layers" class="text-indigo-500"></i>
-                <span class="font-bold tracking-tight text-lg">Graphite<span class="text-indigo-500">:</span>WebDev</span>
+    <!-- NAVIGATION -->
+    <nav class="fixed w-full z-50 px-6 py-4 backdrop-blur-xl bg-opacity-90 transition-all duration-300 border-b border-white/10">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 flex items-center justify-center clay-btn rounded-xl text-indigo-500">
+                    <i data-lucide="layers"></i>
+                </div>
+                <span class="text-xl font-bold tracking-tight">Graphite<span class="text-indigo-500">:WebDev</span></span>
             </div>
-            <div class="flex items-center gap-6 text-sm font-medium text-slate-400">
-                <a href="#philosophy" class="hover:text-white transition-colors">Philosophy</a>
-                <a href="#modes" class="hover:text-white transition-colors">Workspaces</a>
-                <a href="#features" class="hover:text-white transition-colors">Features</a>
-                <a href="#gallery" class="hover:text-white transition-colors">Gallery</a>
-                <span class="px-3 py-1 rounded-full bg-indigo-500/10 text-indigo-400 text-xs border border-indigo-500/20">Private Preview</span>
+            
+            <div class="flex items-center gap-4">
+                <nav class="hidden md:flex gap-6 font-medium text-sm text-text-muted">
+                    <a href="#features" class="hover:text-indigo-500 transition-colors">Features</a>
+                    <a href="#workflow" class="hover:text-indigo-500 transition-colors">Workflow</a>
+                    <a href="#integration" class="hover:text-indigo-500 transition-colors">Integrations</a>
+                </nav>
+                <button id="themeToggle" class="clay-btn p-3 rounded-full w-12 h-12 flex items-center justify-center">
+                    <i data-lucide="moon" class="w-5 h-5"></i>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <header class="relative pt-32 pb-20 px-6 overflow-hidden">
-        <!-- Background Effects -->
-        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-indigo-600/10 blur-[120px] rounded-full pointer-events-none"></div>
+    <!-- HERO SECTION -->
+    <header class="pt-36 pb-24 px-6 relative overflow-hidden">
+        <!-- Background Decor -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[800px] bg-indigo-500/5 rounded-full blur-[120px] -z-10"></div>
 
-        <div class="max-w-7xl mx-auto text-center relative z-10">
-            <!-- Badges -->
-            <div class="flex flex-wrap justify-center gap-3 mb-8 animate-float">
-                <img src="https://img.shields.io/badge/Platform-Client--Side-blue?style=for-the-badge&logo=Web&logoColor=white" alt="Platform" class="rounded shadow-lg">
-                <img src="https://img.shields.io/badge/AI_Core-Gemini_3.0_Pro-8A2BE2?style=for-the-badge&logo=google-gemini&logoColor=white" alt="AI Core" class="rounded shadow-lg">
-                <img src="https://img.shields.io/badge/Framework-React_19-61DAFB?style=for-the-badge&logo=react&logoColor=black" alt="React 19" class="rounded shadow-lg">
-                <img src="https://img.shields.io/badge/Status-Proprietary_/_In_Development-orange?style=for-the-badge" alt="Status" class="rounded shadow-lg">
-                <img src="https://img.shields.io/badge/Ecosystem-Graphite_2-2F4F4F?style=for-the-badge" alt="Ecosystem" class="rounded shadow-lg">
-            </div>
-
-            <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-6">
-                Code at the speed of <br>
-                <span class="gradient-text">Cognition.</span>
-            </h1>
+        <div class="max-w-6xl mx-auto text-center">
             
-            <p class="text-xl text-slate-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-                The first <strong>Agentic IDE</strong> that doesn't just autocomplete—it architects. 
-                Powered by Gemini 3.0 Pro, translating natural language blueprints into production-ready web applications.
+            <!-- Headline -->
+            <div class="fade-in-up">
+                <span class="px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest text-indigo-600 bg-indigo-50 border border-indigo-100 mb-6 inline-block">
+                    The Cognitive Architect
+                </span>
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight text-text-main">
+                    Stop Coding Syntax. <br>
+                    <span class="text-indigo-500">Start Architecting Solutions.</span>
+                </h1>
+            </div>
+            
+            <p class="text-xl text-text-muted max-w-3xl mx-auto mb-10 fade-in-up delay-100 leading-relaxed">
+                Graphite isn't just an IDE. It's a partner. Transform natural language into production-ready web applications with an AI that plans, reasons, and executes.
             </p>
 
-            <!-- Hero Banner Image -->
-            <div class="relative rounded-2xl overflow-hidden shadow-2xl border border-white/10 max-w-6xl mx-auto group">
-                <div class="absolute inset-0 bg-gradient-to-t from-[#0f1115] via-transparent to-transparent opacity-50 z-10"></div>
-                <img src="https://github.com/user-attachments/assets/bcde869b-110f-40dc-a24c-976518ad9b77" alt="Graphite WebDev Hero Banner" class="w-full h-auto transform transition-transform duration-700 group-hover:scale-[1.02]">
+            <div class="flex flex-col sm:flex-row justify-center gap-4 mb-16 fade-in-up delay-200">
+                <a href="#demo" class="clay-btn cta-btn px-8 py-4 text-lg inline-flex items-center gap-2">
+                    Watch Demo <i data-lucide="play-circle" class="w-5 h-5"></i>
+                </a>
             </div>
+
+            <!-- YouTube Embed (Claymorphic Frame) -->
+            <div id="demo" class="fade-in-up delay-300 relative max-w-4xl mx-auto">
+                <div class="clay-card p-2 bg-white/50 backdrop-blur-sm">
+                    <div class="aspect-video w-full rounded-2xl overflow-hidden shadow-inner bg-black">
+                        <iframe 
+                            width="100%" 
+                            height="100%" 
+                            src="https://www.youtube.com/embed/0Pq_6z6VakE?si=PpbOtaSjiKfqJpVi" 
+                            title="YouTube video player" 
+                            frameborder="0" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                            referrerpolicy="strict-origin-when-cross-origin" 
+                            allowfullscreen>
+                        </iframe>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </header>
 
-    <!-- Philosophy / Launch Section -->
-    <section id="philosophy" class="py-20 px-6 bg-[#13151a]">
-        <div class="max-w-6xl mx-auto">
-            <div class="grid md:grid-cols-2 gap-12 items-center">
-                <div>
-                    <h2 class="text-3xl font-bold mb-6">Choose Your Paradigm</h2>
-                    <p class="text-slate-400 text-lg mb-6">
-                        Graphite isn't just an editor; it's a shapeshifter. Upon launch, select the interface that matches your cognitive state.
+    <!-- VALUE PROPOSITION -->
+    <section class="py-24 px-6 bg-black/5" id="features">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-bold mb-4">Three Modes. Infinite Possibilities.</h2>
+                <p class="text-text-muted text-lg max-w-2xl mx-auto">
+                    Graphite adapts to your workflow. Whether you're sketching an idea or deploying enterprise code, there is a workspace designed for you.
+                </p>
+            </div>
+
+            <!-- Launch Screen -->
+            <div class="mb-24 flex flex-col md:flex-row items-center gap-12">
+                <div class="flex-1">
+                    <div class="clay-card p-3">
+                        <img src="https://github.com/user-attachments/assets/b4aeec82-fb83-4c64-9f6f-c700363a439c" alt="Launch Screen" class="rounded-xl w-full">
+                    </div>
+                </div>
+                <div class="flex-1 space-y-6">
+                    <h3 class="text-3xl font-bold">Your Command Center</h3>
+                    <p class="text-text-muted text-lg">
+                        Every session begins here. Choose your level of abstraction. Switch seamlessly between modes as your project evolves from concept to code.
                     </p>
-                    <ul class="space-y-4 mb-8">
-                        <li class="flex items-start gap-3">
-                            <div class="bg-indigo-500/20 p-2 rounded text-indigo-400"><i data-lucide="wand-2"></i></div>
-                            <div>
-                                <strong class="block text-white">Designer Mode</strong>
-                                <span class="text-sm text-slate-500">Pure conversation. No code visibility. Focus on aesthetics.</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <div class="bg-indigo-500/20 p-2 rounded text-indigo-400"><i data-lucide="code-2"></i></div>
-                            <div>
-                                <strong class="block text-white">Developer Mode</strong>
-                                <span class="text-sm text-slate-500">Full IDE. File tree, terminal, and manual override controls.</span>
-                            </div>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <div class="bg-indigo-500/20 p-2 rounded text-indigo-400"><i data-lucide="network"></i></div>
-                            <div>
-                                <strong class="block text-white">Architect Mode</strong>
-                                <span class="text-sm text-slate-500">Node-based visual programming for complex prompt chaining.</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div class="relative">
-                    <img src="https://github.com/user-attachments/assets/b4aeec82-fb83-4c64-9f6f-c700363a439c" class="rounded-xl shadow-2xl border border-white/10 hover:border-indigo-500/50 transition-colors" alt="Launch Selection Screen">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Workspaces (Modes) -->
-    <section id="modes" class="py-24 px-6 relative">
-        <div class="max-w-7xl mx-auto space-y-32">
-            
-            <!-- Designer Mode -->
-            <div class="flex flex-col gap-8">
-                <div class="text-center max-w-3xl mx-auto">
-                    <span class="text-indigo-400 font-mono text-sm uppercase tracking-wider">Mode 01</span>
-                    <h3 class="text-3xl font-bold mt-2">The Designer Workspace</h3>
-                    <p class="text-slate-400 mt-2">A clean slate for visual thinkers. The AI acts as your hands, manipulating the DOM in real-time based on conversational intent.</p>
-                </div>
-                <div class="rounded-xl overflow-hidden border border-white/10 shadow-2xl screenshot-card">
-                    <img src="https://github.com/user-attachments/assets/10f7d635-79e6-4a92-a604-501d1a57b984" class="w-full" alt="Designer Mode UI">
+                    <div class="grid grid-cols-1 gap-4">
+                        <div class="clay-inset p-4 flex items-center gap-4">
+                            <i data-lucide="wand-2" class="text-purple-500"></i>
+                            <span class="font-bold">Designer:</span> <span class="text-text-muted">Chat-to-App interface.</span>
+                        </div>
+                        <div class="clay-inset p-4 flex items-center gap-4">
+                            <i data-lucide="code-2" class="text-emerald-500"></i>
+                            <span class="font-bold">Developer:</span> <span class="text-text-muted">Full IDE control.</span>
+                        </div>
+                        <div class="clay-inset p-4 flex items-center gap-4">
+                            <i data-lucide="network" class="text-blue-500"></i>
+                            <span class="font-bold">Architect:</span> <span class="text-text-muted">Visual node planning.</span>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Developer Mode -->
-            <div class="flex flex-col gap-8">
-                <div class="text-center max-w-3xl mx-auto">
-                    <span class="text-indigo-400 font-mono text-sm uppercase tracking-wider">Mode 02</span>
-                    <h3 class="text-3xl font-bold mt-2">The Developer Workspace</h3>
-                    <p class="text-slate-400 mt-2">Precision control. Access the Virtual File System (VFS), edit code manually with syntax highlighting, and debug with the integrated console.</p>
+            <!-- Feature 1: Designer Mode -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+                <div class="order-2 lg:order-1 space-y-6">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center mb-2 clay-inset">
+                        <i data-lucide="message-square"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold">Designer Mode</h3>
+                    <p class="text-text-muted text-lg leading-relaxed">
+                        The barrier to entry is gone. Describe your vision in plain English, and watch Graphite build it in real-time. Perfect for rapid prototyping and visual thinkers.
+                    </p>
                 </div>
-                <div class="rounded-xl overflow-hidden border border-white/10 shadow-2xl screenshot-card">
-                    <img src="https://github.com/user-attachments/assets/aac847f7-ba9e-49ca-bac1-0bd9766c5451" class="w-full" alt="Developer Mode Main Canvas">
+                <div class="order-1 lg:order-2 clay-card p-3">
+                    <img src="https://github.com/user-attachments/assets/10f7d635-79e6-4a92-a604-501d1a57b984" alt="Designer Mode" class="rounded-xl w-full">
                 </div>
             </div>
 
-            <!-- Architect Mode (Blueprint) -->
-            <div class="flex flex-col gap-8">
-                <div class="text-center max-w-3xl mx-auto">
-                    <span class="text-indigo-400 font-mono text-sm uppercase tracking-wider">Mode 03</span>
-                    <h3 class="text-3xl font-bold mt-2">The Blueprint Canvas</h3>
-                    <p class="text-slate-400 mt-2">Orchestrate Multi-Agent Swarms. Define a "Plan", let the "Developer" execute, and the "Reviewer" audit, all visually mapped on an infinite canvas.</p>
+            <!-- Feature 2: Developer Mode -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-24">
+                <div class="clay-card p-3">
+                    <img src="https://github.com/user-attachments/assets/aac847f7-ba9e-49ca-bac1-0bd9766c5451" alt="Developer Mode" class="rounded-xl w-full">
                 </div>
-                <div class="rounded-xl overflow-hidden border border-white/10 shadow-2xl screenshot-card">
-                    <img src="https://github.com/user-attachments/assets/ad402255-3020-49d6-9989-f18e43557f6f" class="w-full" alt="Blueprint Canvas Agentic Node">
+                <div class="space-y-6">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mb-2 clay-inset">
+                        <i data-lucide="terminal-square"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold">Developer Mode</h3>
+                    <p class="text-text-muted text-lg leading-relaxed">
+                        For when precision matters. A complete client-side IDE with file tree, syntax highlighting, and direct access to the codebase Graphite generates. You retain full control.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Feature 3: Architect Mode -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <div class="order-2 lg:order-1 space-y-6">
+                    <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-600 flex items-center justify-center mb-2 clay-inset">
+                        <i data-lucide="workflow"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold">Architect Mode</h3>
+                    <p class="text-text-muted text-lg leading-relaxed">
+                        Code is linear. Thought is not. Map out complex application logic, orchestrate multi-agent swarms, and manage project state visually with the Blueprint Canvas.
+                    </p>
+                </div>
+                <div class="order-1 lg:order-2 clay-card p-3">
+                    <img src="https://github.com/user-attachments/assets/ad402255-3020-49d6-9989-f18e43557f6f" alt="Blueprint Canvas" class="rounded-xl w-full">
                 </div>
             </div>
 
         </div>
     </section>
 
-    <!-- Technical Features Grid -->
-    <section id="features" class="py-24 px-6 bg-[#13151a]">
-        <div class="max-w-7xl mx-auto">
-            <div class="mb-16">
-                <h2 class="text-4xl font-bold mb-4">System Architecture</h2>
-                <p class="text-slate-400">Deep integration with GitHub and advanced memory management.</p>
+    <!-- TECHNICAL SUPERPOWERS -->
+    <section class="py-24 px-6" id="workflow">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-bold">Engineered for Intelligence</h2>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                <!-- Context Management -->
+                <div class="clay-card p-6 flex flex-col h-full">
+                    <div class="mb-6">
+                        <img src="https://github.com/user-attachments/assets/8200ccb2-e616-4f2d-b335-42ce26451709" alt="Context Management" class="rounded-xl w-full border border-black/5">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Dynamic Memory</h3>
+                    <p class="text-text-muted">
+                        Graphite manages the AI's context window intelligently. Large files are compressed, active files are prioritized, ensuring the model knows exactly what it needs to know without token overflow.
+                    </p>
+                </div>
+
+                <!-- Live Preview -->
+                <div class="clay-card p-6 flex flex-col h-full">
+                    <div class="mb-6">
+                        <img src="https://github.com/user-attachments/assets/248b763b-10e7-47c5-a7ed-2d1c04f7ea1c" alt="Live Preview" class="rounded-xl w-full border border-black/5">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-3">Sandboxed Execution</h3>
+                    <p class="text-text-muted">
+                        Render your code in a secure, isolated iframe environment. Features responsive viewports, infinite loop protection, and console log interception for safe testing.
+                    </p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- INTEGRATIONS -->
+    <section class="py-24 px-6 bg-black/5" id="integration">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="text-4xl font-bold mb-4">Professional Workflow Ready</h2>
+                <p class="text-text-muted">Seamlessly integrate with the tools you already use.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
                 
-                <!-- Card 1: Context Memory -->
-                <div class="glass p-1 rounded-2xl group">
-                    <div class="p-6">
-                        <div class="flex items-center gap-3 mb-4">
-                            <i data-lucide="cpu" class="text-indigo-400"></i>
-                            <h3 class="text-xl font-bold">Dynamic Context Manager</h3>
-                        </div>
-                        <p class="text-sm text-slate-400 mb-6">
-                            Graphite intelligently truncates large inactive files to save token windows while keeping the active file in high-resolution focus.
-                        </p>
+                <!-- Import -->
+                <div class="space-y-6">
+                    <div class="clay-card p-3 bg-white/50">
+                        <img src="https://github.com/user-attachments/assets/d1084d1d-028b-4b6f-9158-85a9381187b7" alt="GitHub Import" class="rounded-xl w-full">
                     </div>
-                    <div class="rounded-xl overflow-hidden border-t border-white/5">
-                        <img src="https://github.com/user-attachments/assets/8200ccb2-e616-4f2d-b335-42ce26451709" class="w-full hover:scale-105 transition-transform duration-500" alt="Context Memory Manager">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">Import Repositories</h3>
+                        <p class="text-text-muted">
+                            Clone existing projects directly into Graphite. The AI reads your codebase to match your style and project structure immediately.
+                        </p>
                     </div>
                 </div>
 
-                <!-- Card 2: Github Import -->
-                <div class="glass p-1 rounded-2xl group">
-                    <div class="p-6">
-                        <div class="flex items-center gap-3 mb-4">
-                            <i data-lucide="git-pull-request" class="text-indigo-400"></i>
-                            <h3 class="text-xl font-bold">Repository Import</h3>
-                        </div>
-                        <p class="text-sm text-slate-400 mb-6">
-                            Seamlessly fetch and clone repositories directly into the browser's Virtual File System using the GitHub API.
+                <!-- Export -->
+                <div class="space-y-6">
+                    <div class="clay-card p-3 bg-white/50">
+                        <img src="https://github.com/user-attachments/assets/ae02149e-b7c5-40d4-afdb-3aaf6698432b" alt="GitHub Push" class="rounded-xl w-full">
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-bold mb-2">Push & Deploy</h3>
+                        <p class="text-text-muted">
+                            Commit changes back to GitHub without leaving the browser. Secure token management ensures your code stays safe.
                         </p>
-                    </div>
-                    <div class="rounded-xl overflow-hidden border-t border-white/5">
-                        <img src="https://github.com/user-attachments/assets/d1084d1d-028b-4b6f-9158-85a9381187b7" class="w-full hover:scale-105 transition-transform duration-500" alt="GitHub Import">
-                    </div>
-                </div>
-
-                <!-- Card 3: Live Preview -->
-                <div class="glass p-1 rounded-2xl group">
-                    <div class="p-6">
-                        <div class="flex items-center gap-3 mb-4">
-                            <i data-lucide="monitor-play" class="text-indigo-400"></i>
-                            <h3 class="text-xl font-bold">Sandboxed Viewport</h3>
-                        </div>
-                        <p class="text-sm text-slate-400 mb-6">
-                            Responsive testing tools built-in. Code is executed in a secure iframe with infinite-loop protection middleware.
-                        </p>
-                    </div>
-                    <div class="rounded-xl overflow-hidden border-t border-white/5">
-                        <img src="https://github.com/user-attachments/assets/248b763b-10e7-47c5-a7ed-2d1c04f7ea1c" class="w-full hover:scale-105 transition-transform duration-500" alt="Live Viewport">
-                    </div>
-                </div>
-
-                <!-- Card 4: Security/Push -->
-                <div class="glass p-1 rounded-2xl group">
-                    <div class="p-6">
-                        <div class="flex items-center gap-3 mb-4">
-                            <i data-lucide="shield-check" class="text-indigo-400"></i>
-                            <h3 class="text-xl font-bold">Shadow Protocol Push</h3>
-                        </div>
-                        <p class="text-sm text-slate-400 mb-6">
-                            Review AI-generated changes and push directly to your main branch with a generated commit signature.
-                        </p>
-                    </div>
-                    <div class="rounded-xl overflow-hidden border-t border-white/5">
-                        <img src="https://github.com/user-attachments/assets/ae02149e-b7c5-40d4-afdb-3aaf6698432b" class="w-full hover:scale-105 transition-transform duration-500" alt="GitHub Push Protocol">
                     </div>
                 </div>
 
@@ -280,62 +419,123 @@
         </div>
     </section>
 
-    <!-- Aesthetics / Gallery -->
-    <section id="gallery" class="py-24 px-6">
-        <div class="max-w-7xl mx-auto">
-            <h2 class="text-4xl font-bold mb-12 text-center">Adaptive UI System</h2>
+    <!-- CUSTOMIZATION -->
+    <section class="py-24 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-4xl font-bold mb-16">Make It Yours</h2>
             
-            <div class="space-y-20">
-                <!-- Light Mode -->
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-orange-400 to-pink-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative rounded-xl overflow-hidden border border-white/10">
-                        <img src="https://github.com/dovvnloading/Graphite-WebDev/blob/main/ScreenShots/Screenshot%20light%20mode.png?raw=true" class="w-full" alt="Light Mode Interface">
-                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-                            <h3 class="text-xl font-bold text-white">Light Claymorphism</h3>
-                        </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="group">
+                    <div class="clay-card p-2 mb-6 group-hover:-translate-y-2 transition-transform duration-300">
+                        <img src="https://github.com/dovvnloading/Graphite-WebDev/blob/main/ScreenShots/Screenshot%20light%20mode.png?raw=true" alt="Light Mode" class="rounded-lg w-full">
                     </div>
+                    <h4 class="font-bold text-xl text-text-main">Light Mode</h4>
                 </div>
 
-                <!-- Dark Mode -->
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 to-cyan-500 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative rounded-xl overflow-hidden border border-white/10">
-                        <img src="https://github.com/user-attachments/assets/75c45009-7269-434e-a131-4928d6bc3e88" class="w-full" alt="Dark Mode Interface">
-                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-                            <h3 class="text-xl font-bold text-white">Dark Matte Aesthetics</h3>
-                        </div>
+                <div class="group">
+                    <div class="clay-card p-2 mb-6 group-hover:-translate-y-2 transition-transform duration-300">
+                        <img src="https://github.com/user-attachments/assets/75c45009-7269-434e-a131-4928d6bc3e88" alt="Dark Mode" class="rounded-lg w-full">
                     </div>
+                    <h4 class="font-bold text-xl text-text-main">Dark Mode</h4>
                 </div>
 
-                <!-- Localization -->
-                <div class="relative group">
-                    <div class="absolute -inset-1 bg-gradient-to-r from-green-400 to-emerald-600 rounded-2xl blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
-                    <div class="relative rounded-xl overflow-hidden border border-white/10">
-                        <img src="https://github.com/user-attachments/assets/bb660692-fd80-4a8a-8881-9947b270792e" class="w-full" alt="Internationalization Support">
-                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black/80 to-transparent">
-                            <h3 class="text-xl font-bold text-white">Global Localization Support</h3>
-                        </div>
+                <div class="group">
+                    <div class="clay-card p-2 mb-6 group-hover:-translate-y-2 transition-transform duration-300">
+                        <img src="https://github.com/user-attachments/assets/bb660692-fd80-4a8a-8881-9947b270792e" alt="Localization" class="rounded-lg w-full">
                     </div>
+                    <h4 class="font-bold text-xl text-text-main">Internationalization</h4>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer class="py-12 border-t border-white/10 bg-[#0f1115] text-center">
-        <div class="flex items-center justify-center gap-2 mb-4 text-slate-500">
-            <i data-lucide="code" class="w-4 h-4"></i>
-            <span class="text-sm">Built with React 19 & Gemini 3.0</span>
+    <!-- CTA FOOTER -->
+    <section class="py-24 px-6 bg-indigo-600 text-white text-center relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div class="max-w-4xl mx-auto relative z-10">
+            <h2 class="text-4xl md:text-5xl font-extrabold mb-8">Ready to Build the Future?</h2>
+            <p class="text-indigo-100 text-xl mb-12 max-w-2xl mx-auto">
+                Join the Graphite 2 Ecosystem and experience the next generation of software development tools.
+            </p>
+            <a href="https://github.com/dovvnloading/Graphite-WebDev" class="inline-block bg-white text-indigo-600 px-10 py-5 rounded-2xl font-bold text-lg shadow-2xl hover:bg-indigo-50 hover:scale-105 transition-all duration-300">
+                View Project on GitHub
+            </a>
         </div>
-        <p class="text-slate-600 text-sm">
-            Graphite: WebDev is a proprietary tool developed as part of the Graphite 2 ecosystem.<br>
-            Copyright &copy; 2026 Graphite Systems. All Rights Reserved.
-        </p>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="py-12 px-6 border-t border-black/5 bg-clay-bg">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+            
+            <div class="flex flex-col items-start">
+                <div class="flex items-center gap-2 mb-2">
+                    <div class="w-8 h-8 flex items-center justify-center clay-inset rounded-lg text-indigo-500">
+                        <i data-lucide="layers" class="w-5 h-5"></i>
+                    </div>
+                    <span class="font-bold text-lg">Graphite Systems</span>
+                </div>
+                <p class="text-sm text-text-muted">© 2026 Graphite Systems. All Rights Reserved.</p>
+                <div class="flex gap-2 mt-3">
+                    <img src="https://img.shields.io/badge/Ecosystem-Graphite_2-2F4F4F?style=flat-square" alt="Ecosystem">
+                </div>
+            </div>
+
+            <div class="flex gap-4">
+                <a href="https://x.com/D3VAUX" target="_blank" class="clay-btn w-10 h-10 rounded-full text-text-muted hover:text-indigo-500">
+                    <i data-lucide="twitter" class="w-4 h-4"></i>
+                </a>
+                <a href="https://github.com/dovvnloading" target="_blank" class="clay-btn w-10 h-10 rounded-full text-text-muted hover:text-indigo-500">
+                    <i data-lucide="user" class="w-4 h-4"></i>
+                </a>
+                <a href="https://github.com/dovvnloading/Graphite-WebDev" target="_blank" class="clay-btn w-10 h-10 rounded-full text-text-muted hover:text-indigo-500">
+                    <i data-lucide="github" class="w-4 h-4"></i>
+                </a>
+            </div>
+        </div>
     </footer>
 
+    <!-- LOGIC SCRIPTS -->
     <script>
-        lucide.createIcons();
+        document.addEventListener('DOMContentLoaded', () => {
+            // Icons
+            lucide.createIcons();
+
+            // Theme Toggle Logic
+            const themeBtn = document.getElementById('themeToggle');
+            const body = document.body;
+
+            // Check Preference
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                body.classList.add('dark-mode');
+                updateIcon(true);
+            }
+
+            themeBtn.addEventListener('click', () => {
+                body.classList.toggle('dark-mode');
+                updateIcon(body.classList.contains('dark-mode'));
+            });
+
+            function updateIcon(isDark) {
+                const icon = themeBtn.querySelector('i');
+                // Create new icon element
+                const newIcon = document.createElement('i');
+                
+                if (isDark) {
+                    // Switch to Sun icon
+                    newIcon.setAttribute('data-lucide', 'sun');
+                } else {
+                    // Switch to Moon icon
+                    newIcon.setAttribute('data-lucide', 'moon');
+                }
+                
+                // Clear old icon and append new one
+                themeBtn.innerHTML = '';
+                themeBtn.appendChild(newIcon);
+                
+                // Re-render icons for new element
+                lucide.createIcons();
+            }
+        });
     </script>
 </body>
 </html>
