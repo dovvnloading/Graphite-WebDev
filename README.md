@@ -171,7 +171,7 @@ Language Selection:
 <br>
 
 <div align="center">
-  <em>Graphite: WebDev is a proprietary tool developed as part of the Graphite 2 ecosystem.</em>
+  
   <br>
   <em>Copyright © 2026 Graphite Systems. All Rights Reserved.</em>
 </div>
